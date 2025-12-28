@@ -1,0 +1,642 @@
+/* Custom Green Primary Theme for Feedtan CMG */
+
+/* Primary Colors */
+:root {
+    --primary-50: #fdf0f0;
+    --primary-100: #fcdcdc;
+    --primary-200: #f7bbbb;
+    --primary-300: #ef8686;
+    --primary-400: #de4a4a;
+    --primary-500: #c52222;
+    --primary-600: #a31616;
+    --primary-700: #801515;
+    --primary-800: #651616;
+    --primary-900: #940000;
+}
+
+/* Override Bootstrap primary color */
+.bg-primary,
+.bg-primary-color,
+.btn-primary {
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-700) !important;
+    border-color: var(--primary-700) !important;
+}
+
+/* Text primary color */
+.text-primary,
+a.text-primary {
+    color: var(--primary-600) !important;
+}
+
+/* Border primary */
+.border-primary {
+    border-color: var(--primary-600) !important;
+}
+
+/* Success color - use green instead of default */
+.bg-success {
+    background-color: var(--primary-500) !important;
+}
+
+.text-success {
+    color: var(--primary-500) !important;
+}
+
+.btn-success {
+    background-color: var(--primary-500) !important;
+    border-color: var(--primary-500) !important;
+}
+
+.btn-success:hover {
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+/* Primary badge */
+.badge.bg-primary,
+.badge.badge-primary {
+    background-color: var(--primary-600) !important;
+    color: white !important;
+}
+
+.badge.bg-success {
+    background-color: var(--primary-500) !important;
+    color: white !important;
+}
+
+/* Links */
+a {
+    color: var(--primary-600);
+}
+
+a:hover {
+    color: var(--primary-700);
+}
+
+/* Active menu items */
+.menu-item.active > .menu-link {
+    background-color: var(--primary-50) !important;
+    color: var(--primary-700) !important;
+}
+
+/* Charts and graphs - apply to apex charts if used */
+.apexcharts-title-text {
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* Apply Inter font to the entire application */
+body,
+html {
+    font-family: 'Inter', 'Public Sans', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Menu styling with primary colors */
+.menu-link:hover {
+    background-color: var(--primary-50) !important;
+}
+
+/* Focus states */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.25) !important;
+}
+
+/* Checkboxes and radios */
+.form-check-input:checked {
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+/* Progress bars */
+.progress-bar {
+    background-color: var(--primary-600) !important;
+}
+
+/* Labels */
+.label-primary {
+    background-color: var(--primary-600) !important;
+}
+
+/* Cards with primary accent */
+.card.bg-primary,
+.card.border-primary {
+    border-left-color: var(--primary-600) !important;
+}
+
+/* Apply green theme to buttons */
+.btn-outline-primary {
+    color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+/* Stats cards */
+.card.stats.bg-primary {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+}
+
+/* Tables */
+.table-primary,
+.table-primary > td,
+.table-primary > th {
+    background-color: var(--primary-50) !important;
+    color: var(--primary-900) !important;
+}
+
+/* Dropdowns */
+.dropdown-item.active {
+    background-color: var(--primary-600) !important;
+}
+
+/* Pagination */
+.page-item.active .page-link {
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+}
+
+/* Tooltips */
+.tooltip .tooltip-inner {
+    background-color: var(--primary-600) !important;
+}
+
+/* Alerts */
+.alert-primary {
+    background-color: var(--primary-50) !important;
+    border-color: var(--primary-200) !important;
+    color: var(--primary-900) !important;
+}
+
+/* Navbar brand */
+.navbar-brand,
+.app-brand {
+    color: var(--primary-600) !important;
+}
+
+/* Sidebar menu */
+.layout-menu .menu-item.active .menu-icon,
+.layout-menu .menu-item.active .menu-text {
+    color: var(--primary-700) !important;
+}
+
+/* Dividers with primary color */
+.divider.divider-primary::before,
+.divider.divider-primary::after {
+    background-color: var(--primary-600) !important;
+}
+
+/* Apply primary colors to backgrounds */
+.bg-label-primary {
+    background-color: var(--primary-100) !important;
+    color: var(--primary-700) !important;
+}
+
+/* Breadcrumb active */
+.breadcrumb-item.active {
+    color: var(--primary-700) !important;
+}
+
+/* ==========================================
+   SUBTLE VISUAL ENHANCEMENTS
+   ========================================== */
+
+/* Smooth transitions for better UX */
+button, a, .btn, .card, .menu-link, .dropdown-item, .nav-link {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Enhanced Card Styling */
+.card {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
+    border-color: var(--primary-200);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 2px solid var(--primary-100);
+}
+
+/* Improved Button Hover Effects */
+.btn {
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: left 0.3s;
+}
+
+.btn:hover:before {
+    left: 0;
+}
+
+/* Enhanced Table Styling */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background-color: var(--primary-50);
+    color: var(--primary-900);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--primary-200);
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--primary-50);
+}
+
+/* Better Menu Item Transitions */
+.menu-link {
+    border-radius: 0.375rem;
+    margin: 0.125rem 0;
+    transition: all 0.2s ease;
+}
+
+.menu-link:hover {
+    transform: translateX(2px);
+}
+
+.menu-item.active > .menu-link {
+    position: relative;
+}
+
+.menu-item.active > .menu-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--primary-600);
+    border-radius: 0 3px 3px 0;
+}
+
+/* Enhanced Badge Styling */
+.badge {
+    padding: 0.375rem 0.625rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: transform 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+/* Improved Form Inputs */
+.form-control, .form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    padding: 0.625rem 0.875rem;
+}
+
+
+
+
+
+
+.form-control:focus,
+.form-select:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* Better Dropdown Styling */
+.dropdown-menu {
+    border: 1px solid var(--primary-200);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    border-radius: 0.375rem;
+    transition: all 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-50);
+    transform: translateX(4px);
+}
+
+/* Enhanced Pagination */
+.pagination .page-link {
+    border-radius: 0.375rem;
+    margin: 0 0.125rem;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--primary-50);
+    border-color: var(--primary-300);
+}
+
+/* Alert Improvements */
+.alert {
+    border-radius: 0.5rem;
+    border-left-width: 4px;
+    padding: 1rem 1.25rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.alert:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.alert-success {
+    background-color: var(--primary-50);
+    border-left-color: var(--primary-500);
+    color: var(--primary-900);
+}
+
+/* Nav Tabs Enhancement */
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: var(--primary-50);
+    color: var(--primary-700);
+    border-bottom-color: var(--primary-300);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-700);
+    border-bottom-color: var(--primary-600);
+    font-weight: 600;
+}
+
+/* Progress Bar Enhancement */
+.progress {
+    height: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary-100);
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.8s ease;
+}
+
+/* Avatar Enhancement */
+.avatar {
+    transition: transform 0.2s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+}
+
+/* Stats Card Enhancement */
+.card-stats {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-stats::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-600), var(--primary-500));
+}
+
+/* Modal Enhancement */
+.modal-header {
+    background-color: var(--primary-50);
+    border-bottom: 2px solid var(--primary-200);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--primary-200);
+}
+
+/* Loading States */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spinner-border {
+    color: var(--primary-600);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-50);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-300);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-500);
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Print Styles */
+@media print {
+    .card:hover,
+    .table tbody tr:hover {
+        background-color: transparent !important;
+    }
+    
+    button, .btn {
+        transition: none !important;
+    }
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .menu-link:hover {
+        transform: none;
+    }
+}
+
+/* Accessibility - Focus States */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.dropdown-item:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+}
+
+/* Empty State Styling */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--primary-300);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Divider Enhancement */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--primary-200);
+}
+
+.divider span {
+    padding: 0 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Notification Badge */
+.badge-notification {
+    position: relative;
+}
+
+.badge-notification::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-600);
+    border-radius: 50%;
+    border: 2px solid #fff;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+/* Icon Enhancement */
+[class^="bx-"], [class*=" bx-"] {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.menu-link:hover [class^="bx-"],
+.menu-link:hover [class*=" bx-"] {
+    transform: scale(1.1);
+    color: var(--primary-600);
+}
+
+/* List Group Enhancement */
+.list-group-item {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--primary-50);
+    border-left-color: var(--primary-500);
+}
+
+.list-group-item.active {
+    background-color: var(--primary-600);
+    border-color: var(--primary-600);
+}
+
+/* Breadcrumb Enhancement */
+.breadcrumb {
+    background-color: var(--primary-50);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--primary-400);
+}
+
+/* Search Input Enhancement */
+.input-group-text {
+    background-color: var(--primary-50);
+    border-color: #d1d5db;
+    transition: background-color 0.2s ease;
+}
+
+.input-group:focus-within .input-group-text {
+    background-color: var(--primary-100);
+    border-color: var(--primary-500);
+}
+

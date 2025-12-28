@@ -1,0 +1,1 @@
+{{-- Reference Details Component - Removed --}}

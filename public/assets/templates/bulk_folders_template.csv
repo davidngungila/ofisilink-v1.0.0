@@ -1,0 +1,16 @@
+Folder Name,Description,Folder Code,Parent Folder ID,Access Level,Department ID
+HR Documents,All HR related documents,HR-DOCS,0,department,1
+Recruitment,Recruitment files and adverts,HR-REC,{PARENT_ID_OF_HR_DOCUMENTS},department,1
+Policies,Company policies and SOPs,HR-POL,0,public,
+Finance,Finance main folder,FIN-ROOT,0,private,
+Payroll,Monthly payroll files,FIN-PAY,{PARENT_ID_OF_FINANCE},private,
+Projects,Project documentation,PRJ-ROOT,0,public,
+Project Alpha,Alpha project files,PRJ-A,{PARENT_ID_OF_PROJECTS},public,
+
+
+
+
+
+
+
+

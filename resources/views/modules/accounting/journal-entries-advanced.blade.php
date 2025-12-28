@@ -1,0 +1,942 @@
+@extends('layouts.app')
+
+@section('title', 'Journal Entries')
+
+@section('breadcrumb')
+<div class="db-breadcrumb">
+    <h4 class="breadcrumb-title">Journal Entries</h4>
+</div>
+@endsection
+
+@section('content')
+<div class="container-fluid px-4 py-3">
+    <!-- Header Section with Gradient Background -->
+    <div class="card border-0 shadow-sm mb-4" style="background:#940000;">
+        <div class="card-body text-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h2 class="fw-bold mb-2 text-white">
+                        <i class="bx bx-book me-2"></i>Journal Entries
+                    </h2>
+                    <p class="mb-0 opacity-90">Manage accounting journal entries with double-entry bookkeeping</p>
+                </div>
+                <div class="d-flex gap-2 mt-3 mt-md-0">
+                    <button class="btn btn-light btn-sm" id="btn-export-excel" title="Export Excel">
+                        <i class="bx bxs-file-excel me-1"></i>Excel
+                    </button>
+                    <a class="btn btn-secondary btn-sm" id="btn-export" target="_blank" title="Export PDF">
+                        <i class="bx bxs-file-pdf me-1"></i>PDF
+                    </a>
+                    <button class="btn btn-light btn-sm" id="btn-refresh" title="Refresh">
+                        <i class="bx bx-refresh"></i>
+                    </button>
+                    <button class="btn btn-light btn-sm" onclick="openJournalModal()" title="New Entry">
+                        <i class="bx bx-plus"></i> New Entry
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards with Animations -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 summary-card" data-type="debit">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2 text-uppercase small fw-semibold">Total Debits</h6>
+                            <h3 class="mb-0 text-success fw-bold" id="sumDebit">0.00</h3>
+                            <small class="text-muted">TZS</small>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i class="bx bx-trending-up fs-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 summary-card" data-type="credit">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2 text-uppercase small fw-semibold">Total Credits</h6>
+                            <h3 class="mb-0 text-danger fw-bold" id="sumCredit">0.00</h3>
+                            <small class="text-muted">TZS</small>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                            <i class="bx bx-trending-down fs-4 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 summary-card" data-type="balance">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2 text-uppercase small fw-semibold">Balance</h6>
+                            <h3 class="mb-0 fw-bold" id="sumBalance">0.00</h3>
+                            <small class="text-muted" id="balanceLabel">Dr - Cr</small>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="bx bx-calculator fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 summary-card" data-type="count">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2 text-uppercase small fw-semibold">Total Entries</h6>
+                            <h3 class="mb-0 fw-bold" id="sumCount">0</h3>
+                            <small class="text-muted">Entries</small>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="bx bx-list-ul fs-4 text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Filters Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="bx bx-filter-alt me-2"></i>Filters & Search
+                </h6>
+                <button class="btn btn-sm btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" id="toggleFilters">
+                    <i class="bx bx-chevron-up" id="filterIcon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="collapse show" id="filterCollapse">
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Quick Date Presets -->
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label small text-muted fw-semibold">Quick Date Range</label>
+                        <div class="btn-group btn-group-sm w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary date-preset" data-days="0">Today</button>
+                            <button type="button" class="btn btn-outline-primary date-preset" data-days="7">Last 7 Days</button>
+                            <button type="button" class="btn btn-outline-primary date-preset" data-days="30">Last 30 Days</button>
+                            <button type="button" class="btn btn-outline-primary date-preset" data-days="90">Last 3 Months</button>
+                            <button type="button" class="btn btn-outline-primary date-preset" data-days="365">Last Year</button>
+                            <button type="button" class="btn btn-outline-primary" id="clearDates">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-semibold">From Date</label>
+                        <input type="date" class="form-control form-control-sm" id="filterFrom" value="{{ request('date_from', date('Y-m-01')) }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-semibold">To Date</label>
+                        <input type="date" class="form-control form-control-sm" id="filterTo" value="{{ request('date_to', date('Y-m-d')) }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-semibold">Status</label>
+                        <select class="form-select form-select-sm" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="Draft" {{ request('status') == 'Draft' ? 'selected' : '' }}>Draft</option>
+                            <option value="Posted" {{ request('status') == 'Posted' ? 'selected' : '' }}>Posted</option>
+                            <option value="Reversed" {{ request('status') == 'Reversed' ? 'selected' : '' }}>Reversed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-semibold">Source</label>
+                        <select class="form-select form-select-sm" id="filterSource">
+                            <option value="">All Sources</option>
+                            <option value="Manual">Manual</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Purchase">Purchase</option>
+                            <option value="Payroll">Payroll</option>
+                            <option value="Petty Cash">Petty Cash</option>
+                            <option value="Imprest">Imprest</option>
+                            <option value="Bank">Bank</option>
+                            <option value="Asset">Asset</option>
+                            <option value="Adjustment">Adjustment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label small text-muted fw-semibold">Search</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white"><i class="bx bx-search"></i></span>
+                            <input type="text" class="form-control" id="filterQ" placeholder="Search by entry no, description, reference, or source...">
+                            <button class="btn btn-outline-secondary" type="button" id="clearSearch" title="Clear search">
+                                <i class="bx bx-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="card border-0 shadow-sm mb-4" id="chartCard" style="display: none;">
+        <div class="card-header bg-white border-bottom">
+            <h6 class="mb-0 fw-semibold">
+                <i class="bx bx-bar-chart-alt-2 me-2"></i>Journal Entries Trends
+            </h6>
+        </div>
+        <div class="card-body">
+            <canvas id="journalChart" height="80"></canvas>
+        </div>
+    </div>
+
+    <!-- Data Table Section -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="bx bx-table me-2"></i>Journal Entries
+                    <span class="badge bg-primary ms-2" id="entryCount">0</span>
+                </h6>
+                <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+                    <label class="small text-muted me-2">Per page:</label>
+                    <select class="form-select form-select-sm" style="width: auto;" id="perPageSelect">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary" id="toggleChart">
+                        <i class="bx bx-show"></i> Chart
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="journalTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="sortable" data-sort="date">
+                                Date <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="sortable" data-sort="entry_no">
+                                Entry No <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="sortable" data-sort="description">
+                                Description <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="sortable" data-sort="reference">
+                                Reference <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="sortable" data-sort="source">
+                                Source <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="text-end sortable" data-sort="debit">
+                                Debit (TZS) <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="text-end sortable" data-sort="credit">
+                                Credit (TZS) <i class="bx bx-sort"></i>
+                            </th>
+                            <th class="sortable" data-sort="status">
+                                Status <i class="bx bx-sort"></i>
+                            </th>
+                            <th>Created By</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalTableBody">
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted mt-2 mb-0">Loading journal entries...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <th colspan="5" class="text-end">Totals:</th>
+                            <th class="text-end text-success" id="footDebit">0.00</th>
+                            <th class="text-end text-danger" id="footCredit">0.00</th>
+                            <th colspan="3"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white border-top">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="text-muted small" id="rowsInfo">
+                    Showing 0 of 0 entries
+                </div>
+                <nav aria-label="Journal pagination">
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <!-- Pagination will be generated by JavaScript -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reference Details Section -->
+    @include('components.reference-details', ['glAccounts' => $glAccounts, 'cashBoxes' => $cashBoxes])
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<!-- Include existing modals from original view -->
+@include('modules.accounting.journal-entries-modals')
+
+<style>
+.summary-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 4px solid transparent !important;
+}
+
+.summary-card[data-type="debit"] {
+    border-left-color: #28a745 !important;
+}
+
+.summary-card[data-type="credit"] {
+    border-left-color: #dc3545 !important;
+}
+
+.summary-card[data-type="balance"] {
+    border-left-color: #007bff !important;
+}
+
+.summary-card[data-type="count"] {
+    border-left-color: #17a2b8 !important;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sortable:hover {
+    background-color: #f8f9fa;
+}
+
+.sortable i {
+    opacity: 0.3;
+    transition: opacity 0.2s;
+}
+
+.sortable:hover i {
+    opacity: 1;
+}
+
+.sortable.active i {
+    opacity: 1;
+    color: #007bff;
+}
+
+.date-preset.active {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        flex: 1 1 auto;
+        min-width: 80px;
+    }
+}
+</style>
+@endsection
+
+@push('scripts')
+<script src="{{ asset('assets/vendor/libs/chart.js/chart.umd.min.js') }}" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';"></script>
+<script>
+// Include existing journal modal functions from original view
+@include('modules.accounting.journal-entries-scripts')
+
+// Advanced Journal Entries Data Loading
+(function(){
+    const endpoint = '{{ route('modules.accounting.journal-entries.data') }}';
+    const pdfEndpoint = '{{ route('modules.accounting.journal-entries') }}';
+    let page = 1, perPage = 20;
+    let sortColumn = 'date', sortDirection = 'desc';
+    let allEntries = [];
+    let chart = null;
+    
+    function number(n){
+        return (Number(n)||0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+    
+    function formatCurrency(n){
+        return 'TZS ' + number(n);
+    }
+    
+    function qs(){
+        return {
+            date_from: document.getElementById('filterFrom').value || '',
+            date_to: document.getElementById('filterTo').value || '',
+            status: document.getElementById('filterStatus').value || '',
+            source: document.getElementById('filterSource').value || '',
+            q: document.getElementById('filterQ').value || '',
+            page, per_page: perPage
+        };
+    }
+    
+    function showLoading(show = true){
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+    
+    function updateSummary(summary){
+        const debit = summary?.total_debit || 0;
+        const credit = summary?.total_credit || 0;
+        const balance = summary?.balance || 0;
+        const count = summary?.count || 0;
+        
+        animateValue('sumDebit', 0, debit, 800);
+        animateValue('sumCredit', 0, credit, 800);
+        animateValue('sumBalance', 0, balance, 800);
+        animateValue('sumCount', 0, count, 800);
+        
+        document.getElementById('footDebit').textContent = formatCurrency(debit);
+        document.getElementById('footCredit').textContent = formatCurrency(credit);
+        
+        const balanceEl = document.getElementById('sumBalance');
+        const balanceLabel = document.getElementById('balanceLabel');
+        balanceEl.textContent = formatCurrency(Math.abs(balance));
+        balanceEl.className = balance >= 0 ? 'mb-0 text-success fw-bold' : 'mb-0 text-danger fw-bold';
+        balanceLabel.textContent = balance >= 0 ? 'Debit Balance' : 'Credit Balance';
+    }
+    
+    function animateValue(id, start, end, duration){
+        const element = document.getElementById(id);
+        const startVal = parseFloat(element.textContent.replace(/[^0-9.-]/g, '')) || start;
+        let current = startVal;
+        const range = end - startVal;
+        const increment = range / (duration / 16);
+        const timer = setInterval(() => {
+            current += increment;
+            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                if(id === 'sumCount') {
+                    element.textContent = Math.round(end).toLocaleString();
+                } else {
+                    element.textContent = formatCurrency(end);
+                }
+                clearInterval(timer);
+            } else {
+                if(id === 'sumCount') {
+                    element.textContent = Math.round(current).toLocaleString();
+                } else {
+                    element.textContent = formatCurrency(current);
+                }
+            }
+        }, 16);
+    }
+    
+    function escapeHtml(s){ 
+        return (s||'').replace(/[&<>"']/g, m => ({
+            '&':'&amp;',
+            '<':'&lt;',
+            '>':'&gt;',
+            '"':'&quot;',
+            '\'':'&#39;'
+        }[m])); 
+    }
+    
+    function getStatusBadge(status){
+        const badges = {
+            'Draft': 'bg-warning',
+            'Posted': 'bg-success',
+            'Reversed': 'bg-danger'
+        };
+        return badges[status] || 'bg-secondary';
+    }
+    
+    function renderTable(entries){
+        const tbody = document.getElementById('journalTableBody');
+        
+        if(!entries || !entries.length){
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10" class="text-center py-5">
+                        <i class="bx bx-inbox fs-1 text-muted"></i>
+                        <p class="text-muted mt-2 mb-0">No journal entries found. Try adjusting your filters.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = entries.map((e, idx) => `
+            <tr class="fade-in" style="animation-delay: ${idx * 0.02}s">
+                <td>
+                    <span class="badge bg-light text-dark">${e.date_display || e.date || ''}</span>
+                </td>
+                <td><code class="text-primary fw-bold">${escapeHtml(e.entry_no || '')}</code></td>
+                <td>
+                    <div class="fw-medium">${escapeHtml(e.description || '')}</div>
+                </td>
+                <td><code class="text-info">${escapeHtml(String(e.reference || '-'))}</code></td>
+                <td>
+                    <span class="badge bg-secondary">${escapeHtml(e.source || '')}</span>
+                </td>
+                <td class="text-end">
+                    ${e.debit > 0 ? `<span class="text-success fw-semibold">${formatCurrency(e.debit)}</span>` : '<span class="text-muted">—</span>'}
+                </td>
+                <td class="text-end">
+                    ${e.credit > 0 ? `<span class="text-danger fw-semibold">${formatCurrency(e.credit)}</span>` : '<span class="text-muted">—</span>'}
+                </td>
+                <td>
+                    <span class="badge ${getStatusBadge(e.status)}">${escapeHtml(e.status || '')}</span>
+                </td>
+                <td>
+                    <small class="text-muted">${escapeHtml(e.created_by || 'System')}</small>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-info" onclick="viewEntry(${e.id})" title="View Details">
+                        <i class="bx bx-show"></i>
+                    </button>
+                    ${e.status === 'Draft' ? `
+                        <button class="btn btn-sm btn-warning" onclick="editEntry(${e.id})" title="Edit">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-success" onclick="postEntry(${e.id})" title="Post">
+                            <i class="bx bx-check"></i>
+                        </button>
+                    ` : ''}
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderPagination(currentPage, totalEntries){
+        const totalPages = Math.ceil(totalEntries / perPage);
+        const pagination = document.getElementById('pagination');
+        
+        if(totalPages <= 1){
+            pagination.innerHTML = '';
+            return;
+        }
+        
+        let html = '';
+        
+        // Previous button
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+        </li>`;
+        
+        // Page numbers
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
+        
+        if(startPage > 1){
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+            if(startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+        
+        for(let i = startPage; i <= endPage; i++){
+            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>`;
+        }
+        
+        if(endPage < totalPages){
+            if(endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+        }
+        
+        // Next button
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+        </li>`;
+        
+        pagination.innerHTML = html;
+        
+        // Attach click handlers
+        pagination.querySelectorAll('a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                page = parseInt(link.dataset.page);
+                load();
+            });
+        });
+    }
+    
+    function updateChart(entries){
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js is not loaded');
+            return;
+        }
+        
+        if(!chart){
+            const ctxEl = document.getElementById('journalChart');
+            if (!ctxEl) {
+                console.warn('Journal chart canvas not found');
+                return;
+            }
+            const ctx = ctxEl.getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Debits',
+                        data: [],
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Credits',
+                        data: [],
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Group by date
+        const grouped = {};
+        entries.forEach(e => {
+            const date = e.date || '';
+            if(!grouped[date]){
+                grouped[date] = { debit: 0, credit: 0 };
+            }
+            grouped[date].debit += e.debit || 0;
+            grouped[date].credit += e.credit || 0;
+        });
+        
+        const dates = Object.keys(grouped).sort();
+        chart.data.labels = dates;
+        chart.data.datasets[0].data = dates.map(d => grouped[d].debit);
+        chart.data.datasets[1].data = dates.map(d => grouped[d].credit);
+        chart.update();
+    }
+    
+    function load(){
+        showLoading(true);
+        const body = document.getElementById('journalTableBody');
+        body.innerHTML = `
+            <tr>
+                <td colspan="10" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2 mb-0">Loading journal entries...</p>
+                </td>
+            </tr>
+        `;
+        
+        fetch(endpoint, {
+            method:'POST', 
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRF-TOKEN':'{{ csrf_token() }}',
+                'Accept':'application/json'
+            }, 
+            body: JSON.stringify(qs())
+        })
+        .then(async r=>{
+            const text = await r.text();
+            let res;
+            try { 
+                res = JSON.parse(text); 
+            } catch(e) { 
+                console.error('JSON parse error:', text); 
+                throw new Error('Invalid response from server'); 
+            }
+            
+            if(!r.ok || !res.success){ 
+                const msg = res.message || 'Failed to load journal entries';
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-danger text-center py-5">
+                            <i class="bx bx-error-circle fs-1"></i>
+                            <p class="mt-2">${escapeHtml(msg)}</p>
+                        </td>
+                    </tr>
+                `;
+                updateSummary({ total_debit: 0, total_credit: 0, balance: 0, count: 0 });
+                document.getElementById('entryCount').textContent = '0';
+                document.getElementById('rowsInfo').textContent = '0 entries';
+                return; 
+            }
+            
+            allEntries = res.entries || [];
+            updateSummary(res.summary || {});
+            document.getElementById('entryCount').textContent = (res.summary?.count || 0).toLocaleString();
+            document.getElementById('rowsInfo').textContent = `Showing ${((page - 1) * perPage) + 1} - ${Math.min(page * perPage, res.summary?.count || 0)} of ${(res.summary?.count || 0).toLocaleString()} entries`;
+            
+            // Sort entries
+            allEntries.sort((a, b) => {
+                let aVal = a[sortColumn];
+                let bVal = b[sortColumn];
+                
+                if(sortColumn === 'debit' || sortColumn === 'credit' || sortColumn === 'balance'){
+                    aVal = parseFloat(aVal) || 0;
+                    bVal = parseFloat(bVal) || 0;
+                }
+                
+                if(sortDirection === 'asc'){
+                    return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+                } else {
+                    return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+                }
+            });
+            
+            renderTable(allEntries);
+            renderPagination(page, res.summary?.count || 0);
+            
+            if(chart && document.getElementById('chartCard').style.display !== 'none'){
+                updateChart(allEntries);
+            }
+        })
+        .catch((err)=>{
+            console.error('Fetch error:', err);
+            body.innerHTML = `
+                <tr>
+                    <td colspan="10" class="text-danger text-center py-5">
+                        <i class="bx bx-error-circle fs-1"></i>
+                        <p class="mt-2">Error loading: ${escapeHtml(err.message || 'Network or server error')}</p>
+                    </td>
+                </tr>
+            `;
+            updateSummary({ total_debit: 0, total_credit: 0, balance: 0, count: 0 });
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+    
+    // Event Listeners
+    document.getElementById('btn-refresh').addEventListener('click', () => { 
+        page = 1; 
+        load(); 
+    });
+    
+    document.getElementById('btn-export').addEventListener('click', (e) => {
+        e.preventDefault();
+        const params = qs();
+        const p = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            if(params[key] && key !== 'page' && key !== 'per_page') {
+                p.append(key, params[key]);
+            }
+        });
+        p.append('export', 'pdf');
+        window.open(pdfEndpoint + '?' + p.toString(), '_blank');
+    });
+    
+    document.getElementById('btn-export-excel').addEventListener('click', () => {
+        alert('Excel export feature coming soon!');
+    });
+    
+    // Date presets
+    document.querySelectorAll('.date-preset').forEach(btn => {
+        btn.addEventListener('click', function(){
+            const days = parseInt(this.dataset.days);
+            if(isNaN(days)) return;
+            
+            const today = new Date();
+            const fromDate = new Date(today);
+            
+            if(days === 0){
+                fromDate.setHours(0,0,0,0);
+            } else {
+                fromDate.setDate(today.getDate() - days);
+            }
+            
+            document.getElementById('filterFrom').value = fromDate.toISOString().split('T')[0];
+            document.getElementById('filterTo').value = today.toISOString().split('T')[0];
+            
+            document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            page = 1;
+            load();
+        });
+    });
+    
+    document.getElementById('clearDates').addEventListener('click', () => {
+        document.getElementById('filterFrom').value = '';
+        document.getElementById('filterTo').value = '';
+        document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+        page = 1;
+        load();
+    });
+    
+    document.getElementById('filterFrom').addEventListener('change', () => { 
+        page = 1; 
+        load(); 
+    });
+    document.getElementById('filterTo').addEventListener('change', () => { 
+        page = 1; 
+        load(); 
+    });
+    document.getElementById('filterStatus').addEventListener('change', () => { 
+        page = 1; 
+        load(); 
+    });
+    document.getElementById('filterSource').addEventListener('change', () => { 
+        page = 1; 
+        load(); 
+    });
+    document.getElementById('filterQ').addEventListener('input', () => { 
+        page = 1; 
+        debounce(load, 300)(); 
+    });
+    document.getElementById('clearSearch').addEventListener('click', () => {
+        document.getElementById('filterQ').value = '';
+        page = 1;
+        load();
+    });
+    document.getElementById('perPageSelect').addEventListener('change', function(){
+        perPage = parseInt(this.value);
+        page = 1;
+        load();
+    });
+    
+    document.getElementById('toggleChart').addEventListener('click', function(){
+        const chartCard = document.getElementById('chartCard');
+        if(chartCard.style.display === 'none'){
+            chartCard.style.display = 'block';
+            this.innerHTML = '<i class="bx bx-hide"></i> Hide Chart';
+            if(allEntries.length > 0){
+                updateChart(allEntries);
+            }
+        } else {
+            chartCard.style.display = 'none';
+            this.innerHTML = '<i class="bx bx-show"></i> Show Chart';
+        }
+    });
+    
+    // Sorting
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', function(){
+            const col = this.dataset.sort;
+            
+            if(sortColumn === col){
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = col;
+                sortDirection = 'desc';
+            }
+            
+            // Update UI
+            document.querySelectorAll('.sortable').forEach(t => {
+                t.classList.remove('active');
+                const icon = t.querySelector('i');
+                icon.className = 'bx bx-sort';
+            });
+            
+            this.classList.add('active');
+            const icon = this.querySelector('i');
+            icon.className = sortDirection === 'asc' ? 'bx bx-sort-up' : 'bx bx-sort-down';
+            
+            // Re-sort and render
+            renderTable(allEntries);
+        });
+    });
+    
+    // Filter collapse toggle
+    document.getElementById('toggleFilters').addEventListener('click', function(){
+        const icon = document.getElementById('filterIcon');
+        const isCollapsed = document.getElementById('filterCollapse').classList.contains('show');
+        icon.className = isCollapsed ? 'bx bx-chevron-down' : 'bx bx-chevron-up';
+    });
+    
+    let t = null;
+    function debounce(fn, ms){ 
+        return () => { 
+            clearTimeout(t); 
+            t = setTimeout(fn, ms); 
+        }; 
+    }
+    
+    // Initialize
+    load();
+})();
+</script>
+@endpush
+@endsection
+
+
+
